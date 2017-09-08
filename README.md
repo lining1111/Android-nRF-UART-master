@@ -13,3 +13,4 @@ This source code can be compiled with Android Studio and Gradle.
 ### Note
 - Android 4.3 or later is required.
 - Android Studio supported 
+### 这是修改后的nrf-uart测试APP
