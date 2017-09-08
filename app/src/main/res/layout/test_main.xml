@@ -4,6 +4,7 @@
               android:layout_height="fill_parent"
               android:orientation="vertical" >
 
+    <!--一个搜索按钮-->
     <LinearLayout
         android:id="@+id/linearLayout2"
         android:layout_width="match_parent"
@@ -18,6 +19,9 @@
             android:text="Connect" />
     </LinearLayout>
 
+
+    <!--    log显示
+            2对输入文本框+发送按钮-->
     <LinearLayout
         android:id="@+id/linearLayout3"
         android:layout_width="match_parent"
@@ -31,14 +35,23 @@
             android:layout_height="292dp"
             android:layout_weight="4.11"
             android:orientation="vertical" >
-
+            <!--log显示-->
+            <ListView
+                android:id="@+id/listMessage"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_above="@+id/sendHexButton"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentTop="true" >
+            </ListView>
+            <!--文本框+发送按钮-->
             <EditText
-                android:id="@+id/sendText"
+                android:id="@+id/sendHex"
                 android:layout_width="102dp"
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
                 android:layout_alignParentLeft="true"
-                android:layout_toLeftOf="@+id/sendButton"
+                android:layout_toLeftOf="@+id/sendHexButton"
                 android:hint=""
                 android:ems="10"
                 android:enabled="false"
@@ -49,17 +62,8 @@
                 android:shadowRadius="1"
                 />
 
-            <ListView
-                android:id="@+id/listMessage"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_above="@+id/sendButton"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentTop="true" >
-            </ListView>
-
             <Button
-                android:id="@+id/sendButton"
+                android:id="@+id/sendHexButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
@@ -68,117 +72,8 @@
                 android:text="Send" />
 
         </RelativeLayout>
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp"
-        android:layout_marginTop="10dp"
-        android:orientation="horizontal" >
-        <EditText
-            android:id="@+id/sendcommendtext"
-            android:layout_width="100sp"
-            android:layout_height="wrap_content"
-            android:maxLength="8"
-            android:hint="输入命令"
-            android:text=""
-            android:visibility="gone"
-          />
-        <EditText
-            android:id="@+id/sendbytetext"
-            android:layout_width="300sp"
-            android:layout_height="wrap_content"
-            android:hint="输入数据"
-            android:text=""
-            android:maxLength="40"
-            />
-
-        <Button
-            android:id="@+id/clicksend"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Send"
-            android:textSize="12sp"/>
-        <EditText
-            android:id="@+id/circlesendbytetext"
-            android:layout_width="100sp"
-            android:layout_height="wrap_content"
-            android:hint="转动时间"
-            android:phoneNumber="true"
-            android:maxLength="20"
-            android:visibility="gone"
-            />
-
-        <Button
-            android:id="@+id/circleclicksend"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="电机转动时间"
-            android:visibility="gone"
-            android:textSize="12sp"/>
 
     </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp"
-        android:layout_marginTop="10dp"
-        android:orientation="horizontal" >
-        <EditText
-            android:id="@+id/timesendcommendtext"
-            android:layout_width="100sp"
-            android:layout_height="wrap_content"
-            android:maxLength="8"
-            android:hint="输入时效命令"
-            android:visibility="gone"
-            android:text="set dhld"/>
-
-
-
-        <EditText
-            android:id="@+id/timesendbytetext"
-            android:layout_width="200sp"
-            android:layout_height="wrap_content"
-            android:hint="输入时间"
-            android:maxLength="12"
-            android:phoneNumber="true"
-            android:visibility="gone"
-            />
-        <Button
-            android:id="@+id/clickbytetimesend"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Send"
-            android:visibility="gone"
-            android:textSize="12sp"/>
-
-        <Button
-            android:id="@+id/clicktimesend"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="开门时间"
-            android:textSize="12sp"
-            android:visibility="gone"/>
-
-        <EditText
-            android:id="@+id/changepasswordtext"
-            android:layout_width="100sp"
-            android:layout_height="wrap_content"
-            android:hint="输入密码"
-            android:maxLength="12"
-            android:phoneNumber="true"
-            android:visibility="gone"/>
-
-        <Button
-            android:id="@+id/changepasswordsend"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="设置密码"
-            android:textSize="12sp"
-            android:visibility="gone"/>
-
-    </LinearLayout>
 
 </LinearLayout>

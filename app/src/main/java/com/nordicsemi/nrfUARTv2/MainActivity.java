@@ -52,10 +52,9 @@ import android.widget.ListView;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
-import java.io.UnsupportedEncodingException;
 import java.text.DateFormat;
-import java.util.Arrays;
 import java.util.Date;
+import java.util.Locale;
 
 public class MainActivity extends Activity implements RadioGroup.OnCheckedChangeListener {
     private static final int REQUEST_SELECT_DEVICE = 1;
@@ -107,28 +106,16 @@ public class MainActivity extends Activity implements RadioGroup.OnCheckedChange
         listAdapter = new ArrayAdapter<String>(this, R.layout.message_detail);
         messageListView.setAdapter(listAdapter);
         messageListView.setDivider(null);
+
         btnConnectDisconnect=(Button) findViewById(R.id.btn_select);
-        btnSend=(Button) findViewById(R.id.sendButton);
-        edtMessage = (EditText) findViewById(R.id.sendText);
+        btnSend=(Button) findViewById(R.id.sendHexButton);
+        edtMessage = (EditText) findViewById(R.id.sendHex);
 
-        commendMsg = (EditText) findViewById(R.id.sendcommendtext);
-        numberMsg = (EditText) findViewById(R.id.sendbytetext);
-        testsendMsg = (Button) findViewById(R.id.clicksend);
-
-        timeCommendMsg = (EditText) findViewById(R.id.timesendcommendtext);
-        timeNumberMsg = (EditText) findViewById(R.id.timesendbytetext);
-        timeTestsendMsg = (Button) findViewById(R.id.clicktimesend);
-
-        cirlceMsg = (EditText) findViewById(R.id.circlesendbytetext);
-        cirlceSendBtn = (Button) findViewById(R.id.circleclicksend);
-
-        changePasswordMsg = (EditText) findViewById(R.id.changepasswordtext);
-        changePasswordBtn = (Button) findViewById(R.id.changepasswordsend);
 
         service_init();
 
-     
-       
+
+
         // Handle Disconnect & Connect button
         btnConnectDisconnect.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -140,9 +127,9 @@ public class MainActivity extends Activity implements RadioGroup.OnCheckedChange
                 }
                 else {
                 	if (btnConnectDisconnect.getText().equals("Connect")){
-                		
+
                 		//Connect button pressed, open DeviceListActivity class, with popup windows that scan for devices
-                		
+
             			Intent newIntent = new Intent(MainActivity.this, DeviceListActivity.class);
             			startActivityForResult(newIntent, REQUEST_SELECT_DEVICE);
         			} else {
@@ -150,7 +137,7 @@ public class MainActivity extends Activity implements RadioGroup.OnCheckedChange
         				if (mDevice!=null)
         				{
         					mService.disconnect();
-        					
+
         				}
         			}
                 }
@@ -160,429 +147,41 @@ public class MainActivity extends Activity implements RadioGroup.OnCheckedChange
         btnSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-            	EditText editText = (EditText) findViewById(R.id.sendText);
+            	EditText editText = (EditText) findViewById(R.id.sendHex);
             	String message = editText.getText().toString();
             	byte[] value;
-				try {
-					//send data to service
-                            value = message.getBytes("UTF-8");
-					mService.writeRXCharacteristic(value);
-					//Update the log with time stamp
-					String currentDateTimeString = DateFormat.getTimeInstance().format(new Date());
-					listAdapter.add("["+currentDateTimeString+"] TX: "+ message);
-               	 	messageListView.smoothScrollToPosition(listAdapter.getCount() - 1);
-               	 	edtMessage.setText("");
-				} catch (UnsupportedEncodingException e) {
-
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+                //send data to service
+                // value = message.getBytes("UTF-8");
+//                value = changeStringToH(message);
+                value = hexStr2Bytes(message);
+                mService.writeRXCharacteristic(value);
+                //Update the log with time stamp
+                String currentDateTimeString = DateFormat.getTimeInstance().format(new Date());
+                listAdapter.add("["+currentDateTimeString+"] TX: "+ message);
+                messageListView.smoothScrollToPosition(listAdapter.getCount() - 1);
+                edtMessage.setText("");
 
             }
         });
 
-
-
-
-
-        //设置密码
-        changePasswordBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                String string = "set keys  ";
-                String message = changePasswordMsg.getText().toString();
-                string = string + message;
-                byte[] value;
-                try {
-                    //send data to service
-                    value = string.getBytes("UTF-8");
-                    mService.writeRXCharacteristic(value);
-                    //Update the log with time stamp
-                    String currentDateTimeString = DateFormat.getTimeInstance().format(new Date());
-                    listAdapter.add("["+currentDateTimeString+"] TX: "+ message);
-                    messageListView.smoothScrollToPosition(listAdapter.getCount() - 1);
-                    cirlceMsg.setText("");
-                } catch (UnsupportedEncodingException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
-
-            }
-        });
-
-        //设置电机转动时间
-        cirlceSendBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String string = "set moto ";
-                String message = cirlceMsg.getText().toString();
-                string = string + message;
-                byte[] value;
-                try {
-                    //send data to service
-                    value = string.getBytes("UTF-8");
-                    mService.writeRXCharacteristic(value);
-                    //Update the log with time stamp
-                    String currentDateTimeString = DateFormat.getTimeInstance().format(new Date());
-                    listAdapter.add("["+currentDateTimeString+"] TX: "+ message);
-                    messageListView.smoothScrollToPosition(listAdapter.getCount() - 1);
-                    cirlceMsg.setText("");
-                } catch (UnsupportedEncodingException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
-
-            }
-        });
-
-        //测试日期设置按钮事件
-        testsendMsg.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-//                String string = "set beep ";
-//                String message = numberMsg.getText().toString();
-//                string = string + message;
-//                byte[] value;
-//                try {
-//                    //send data to service
-//                    value = string.getBytes("UTF-8");
-//                    mService.writeRXCharacteristic(value);
-//                    //Update the log with time stamp
-//                    String currentDateTimeString = DateFormat.getTimeInstance().format(new Date());
-//                    listAdapter.add("["+currentDateTimeString+"] TX: "+ message);
-//                    messageListView.smoothScrollToPosition(listAdapter.getCount() - 1);
-//                    numberMsg.setText("");
-//                } catch (UnsupportedEncodingException e) {
-//                    // TODO Auto-generated catch block
-//                    e.printStackTrace();
-//                }
-
-                byte[] commendMessagevalue;
-                byte[] numberMessagevalue;
-                byte[] value;
-                String commendMessage = commendMsg.getText().toString();
-                String numberMessage = numberMsg.getText().toString();
-                    try {
-
-                            commendMessagevalue = commendMessage.getBytes("UTF-8");
-                            numberMessagevalue = changeStringToH(numberMessage);
-//                            //合并数组
-//                            value = new byte[commendMessagevalue.length+numberMessagevalue.length];
-//                            System.arraycopy(commendMessagevalue,0,value,0,commendMessagevalue.length);
-//                            System.arraycopy(numberMessagevalue,0,value,commendMessagevalue.length,numberMessagevalue.length);
-
-                            mService.writeRXCharacteristic(numberMessagevalue);
-                            String currentDateTimeString = DateFormat.getTimeInstance().format(new Date());
-                            listAdapter.add("["+currentDateTimeString+"] TX: "+ commendMessage + numberMessage);
-                        commendMsg.setText("");
-                        numberMsg.setText("");
-                    }catch (UnsupportedEncodingException e) {
-
-                        e.printStackTrace();
-                    }
-            }
-        });
-
-
-        //测试时效设置按钮事件
-        timeTestsendMsg.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String string = "set dhld ";
-                String message = timeNumberMsg.getText().toString();
-                string = string + message;
-                byte[] value;
-                try {
-                    //send data to service
-                    value = string.getBytes("UTF-8");
-                    mService.writeRXCharacteristic(value);
-                    //Update the log with time stamp
-                    String currentDateTimeString = DateFormat.getTimeInstance().format(new Date());
-                    listAdapter.add("["+currentDateTimeString+"] TX: "+ message);
-                    messageListView.smoothScrollToPosition(listAdapter.getCount() - 1);
-                    timeNumberMsg.setText("");
-                } catch (UnsupportedEncodingException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
-//                byte[] commendMessagevalue;
-//                byte[] numberMessagevalue;
-//                byte[] value;
-//                String commendMessage = "set dhld";
-//                String numberMessage = timeNumberMsg.getText().toString();
-//                int count = numberMessage.length();
-//                if (count % 2 == 0){
-//                    try {
-//                        if (numberMessage.equals("")){
-//                            commendMessagevalue = commendMessage.getBytes("UTF-8");
-//                            mService.writeRXCharacteristic(commendMessagevalue);
-//                            String currentDateTimeString = DateFormat.getTimeInstance().format(new Date());
-//                            listAdapter.add("["+currentDateTimeString+"] TX: "+ commendMessage + numberMessage);
-//
-//                        }else {
-//                            commendMessagevalue = commendMessage.getBytes("UTF-8");
-//                            numberMessagevalue = changeStringToThreeByte(numberMessage);
-//                            //合并数组
-//                            value = new byte[commendMessagevalue.length+numberMessagevalue.length];
-//                            System.arraycopy(commendMessagevalue,0,value,0,commendMessagevalue.length);
-//                            System.arraycopy(numberMessagevalue,0,value,commendMessagevalue.length,numberMessagevalue.length);
-//
-//                            mService.writeRXCharacteristic(value);
-//                            String currentDateTimeString = DateFormat.getTimeInstance().format(new Date());
-//                            listAdapter.add("["+currentDateTimeString+"] TX: "+ commendMessage + numberMessage);
-//                        }
-//                    }catch (UnsupportedEncodingException e) {
-//
-//                        e.printStackTrace();
-//                    }
-//
-//
-//                }else {
-//                    Toast.makeText(MainActivity.this,"输入偶数对数字",Toast.LENGTH_LONG);
-//                }
-
-
-            }
-        });
-
-     
-        // Set initial UI state
-        
-    }
-    //TODO:截取数据，两个两个截取，做位运算--http://blog.csdn.net/yihui823/article/details/6754213---参考这个网站两个数字第一个向左移动四位，然后第二个跟第一个做与运算。
-    //但个数字转换为byte类型数据
-    private byte changeToByte(String string){
-        if (string.equals("0")){
-            return 0x00;
-        }else if (string.equals("1")){
-            return 0x01;
-        }else if (string.equals("2")){
-            return 0x02;
-        }else if (string.equals("3")){
-            return 0x03;
-        }else if (string.equals("4")){
-            return 0x04;
-        }else if (string.equals("5")){
-            return 0x05;
-        }else if (string.equals("6")){
-            return 0x06;
-        }else if (string.equals("7")){
-            return 0x07;
-        }else if (string.equals("8")){
-            return 0x08;
-        }else if (string.equals("9")){
-            return 0x09;
-        }else if (string.equals("a")){
-            return 0x0a;
-        }else if (string.equals("A")){
-            return 0x0a;
-        }else if (string.equals("b")){
-            return 0x0b;
-        }else if (string.equals("B")){
-            return 0x0b;
-        }else if (string.equals("c")){
-            return 0x0c;
-        }else if (string.equals("C")){
-            return 0x0c;
-        }else if (string.equals("d")){
-            return 0x0d;
-        }else if (string.equals("D")){
-            return 0x0d;
-        }else if (string.equals("e")){
-            return 0x0e;
-        }else if (string.equals("E")){
-            return 0x0e;
-        }else if (string.equals("f")){
-            return 0x0f;
-        }else if (string.equals("F")){
-            return 0x0f;
-        }
-      return 0;
-    }
-    //截取数据转换---固定为6位
-    private byte[] changeStringToH(String string){
-        //初始化byte
-        byte  bb1 =0x00;
-        byte  bb2 =0x00;
-        byte  bb3 =0x00;
-        byte  bb4 =0x00;
-        byte  bb5 =0x00;
-        byte  bb6 =0x00;
-        byte  bb7 =0x00;
-        byte  bb8 =0x00;
-        byte  bb9 =0x00;
-        byte  bb10=0x00;
-        byte  bb11=0x00;
-        byte  bb12=0x00;
-        byte  bb13=0x00;
-        byte  bb14=0x00;
-        byte  bb15=0x00;
-        byte  bb16=0x00;
-        byte  bb17=0x00;
-        byte  bb18=0x00;
-        byte  bb19=0x00;
-        byte  bb20=0x00;
-
-
-        int count = string.length();
-        if (count != 0) {
-            int beginIndex = 0;
-            int endIndex = 1;
-            byte b=0x00;
-            for (int i = 0;i<count;i++){
-                String tempString;
-                tempString = string.substring(beginIndex,endIndex);
-                beginIndex = beginIndex +1;
-                endIndex = endIndex +1;
-                byte tempByte = changeToByte(tempString);
-                if (i%2==0){
-                    //取出偶数数值做位运算，并存在b变量里
-                    b= (byte) (tempByte << 4);
-                }
-                if(i == 0) {
-                    continue;
-                }else {
-                    //在偶数数值做完位运算后把后面那个数值与其做与运算
-                    if (i==1) {
-                        bb1 = (byte) (b + tempByte);
-                    }else if(i==3) {
-                        bb2 = (byte) (b + tempByte);
-                    }else if (i==5){
-                        bb3 = (byte) (b + tempByte);
-                    }else if (i==7){
-                        bb4 = (byte) (b + tempByte);
-                    }else if (i==9){
-                        bb5 = (byte) (b + tempByte);
-                    }else if (i==11){
-                        bb6 = (byte) (b + tempByte);
-                    }else if (i==13){
-                        bb7 = (byte) (b + tempByte);
-                    }else if (i==15){
-                        bb8 = (byte) (b + tempByte);
-                    }else if (i==17){
-                        bb9 = (byte) (b + tempByte);
-                    }else if (i==19){
-                        bb10 = (byte) (b + tempByte);
-                    }else if (i==21){
-                        bb11 = (byte) (b + tempByte);
-                    }else if (i==23){
-                        bb12 = (byte) (b + tempByte);
-                    }else if (i==25){
-                        bb13 = (byte) (b + tempByte);
-                    }else if (i==27){
-                        bb14 = (byte) (b + tempByte);
-                    }else if (i==29){
-                        bb15 = (byte) (b + tempByte);
-                    }else if (i==31){
-                        bb16 = (byte) (b + tempByte);
-                    }else if (i==33){
-                        bb17 = (byte) (b + tempByte);
-                    }else if (i==35){
-                        bb18 = (byte) (b + tempByte);
-                    }else if (i==37){
-                        bb19 = (byte) (b + tempByte);
-                    }else if (i==39){
-                        bb20 = (byte) (b + tempByte);
-                    }
-                }
-
-            }
-
-        }
-        byte[] value = new byte[]{bb1,bb2,bb3,bb4,bb5,bb6,bb7,bb8,bb9,bb10,bb11,bb12,bb13,bb14,bb15,bb16,bb17,bb18,bb19,bb20};
-        byte[] value1 = Arrays.copyOf(value,count/2);
-        return value1;
     }
 
-    //TODO截取2个的方法
-    private byte[] changeStringToByte(String string) {
+    //byte字符串转为byte值
+    public static byte[] hexStr2Bytes(String src){
+        //对输入值进行规范化整理
+        src = src.trim().replace(" ","").toUpperCase(Locale.US);
+        //处理值初始化
+        int m = 0,n = 0;
+        int iLen = (src.length())/2;//计算长度
+        byte[] ret = new byte[iLen];//分配存储空间
 
-        int count = string.length()/2;
-        byte[] value = new byte[]{};
-        if (count != 0) {
-            int beginIndex = 0;
-            int endIndex = 2;
-            for (int i = 0;i<count;i++){
-
-//                bb2[0] = (byte) 0x30;
-//                bb2[1] = (byte) 0x31;
-//                bb2[2] = (byte) 0x32;
-//                bb2[3] = (byte) 0x33;
-//                bb2[3] = (byte) 0x34;
-
-                String tempString;
-                tempString = string.substring(beginIndex,endIndex);
-                beginIndex = beginIndex +2;
-                endIndex = endIndex +2;
-                byte[] tempByte = new byte[]{(byte) Integer.parseInt(tempString)};
-                if (i == 0) {
-                    value = tempByte;
-                }else  {
-                    byte[] valueTemp = new byte[value.length+tempByte.length];
-                    System.arraycopy(tempByte,0,valueTemp,0,tempByte.length);
-                    System.arraycopy(value,0,valueTemp,tempByte.length,value.length);
-                    value = valueTemp;
-                }
-            }
-
-        }
-        byte[] byteNew=new  byte[value.length];
-        for(int i=0;i<value.length;i++)
+        for (int i = 0; i < iLen; i++)
         {
-            byteNew[i]=value[value.length-i-1];
+            m = i*2+1;
+            n = m+1;
+            ret[i] = (byte) (Integer.decode( "0x" + src.substring(i*2,m) + src.substring(m,n)) &0xff);
         }
-
-        return byteNew;
-    }
-    //TODO截取3个的方法
-    private byte[] changeStringToThreeByte(String string) {
-
-        int count = string.length()/3;
-        byte[] value = new byte[]{};
-        if (count != 0) {
-            int beginIndex = 0;
-            int endIndex = 3;
-            for (int i = 0;i<count;i++){
-
-//                bb2[0] = (byte) 0x30;
-//                bb2[1] = (byte) 0x31;
-//                bb2[2] = (byte) 0x32;
-//                bb2[3] = (byte) 0x33;
-//                bb2[3] = (byte) 0x34;
-
-                String tempString;
-                tempString = string.substring(beginIndex,endIndex);
-                beginIndex = beginIndex +3;
-                endIndex = endIndex +3;
-//                byte[] tempByte = new byte[]{(byte) Integer.parseInt(tempString)};
-                byte[] tempByte = tempString.getBytes();
-                if (i == 0) {
-
-                    value = tempByte;
-                }else  {
-                    byte[] valueTemp = new byte[value.length+tempByte.length];
-                    System.arraycopy(tempByte,0,valueTemp,0,tempByte.length);
-                    System.arraycopy(value,0,valueTemp,tempByte.length,value.length);
-                    value = valueTemp;
-                }
-            }
-
-        }
-        byte[] byteNew=new  byte[value.length];
-        for(int i=0;i<value.length;i++)
-        {
-            byteNew[i]=value[value.length-i-1];
-        }
-
-        return byteNew;
-    }
-
-    //数组合并
-    public static <T> T[] concat(T[] first, T[] second) {
-        T[] result = Arrays.copyOf(first, first.length + second.length);
-        System.arraycopy(second, 0, result, first.length, second.length);
-        return result;
+        return  ret;
     }
 
     //UART service connected/disconnected
