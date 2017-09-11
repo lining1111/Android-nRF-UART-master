@@ -57,7 +57,7 @@
                 android:enabled="false"
                 android:fontFamily="1"
                 android:lines="1"
-                android:maxLength="20"
+                android:maxLength="40"
                 android:maxLines="1"
                 android:shadowRadius="1"
                 />

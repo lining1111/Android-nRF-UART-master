@@ -22,29 +22,17 @@
  */
 package com.nordicsemi.nrfUARTv2;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-
-
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothManager;
-import android.content.BroadcastReceiver;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.IBinder;
-import android.os.Message;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -60,6 +48,11 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 public class DeviceListActivity extends Activity {
     private BluetoothAdapter mBluetoothAdapter;
 
@@ -69,7 +62,6 @@ public class DeviceListActivity extends Activity {
     
     List<BluetoothDevice> deviceList;
     private DeviceAdapter deviceAdapter;
-    private ServiceConnection onService = null;
     Map<String, Integer> devRssiValues;
     private static final long SCAN_PERIOD = 10000; //scanning for 10 seconds
     private Handler mHandler;
@@ -114,7 +106,7 @@ public class DeviceListActivity extends Activity {
             @Override
             public void onClick(View v) {
             	
-            	if (mScanning==false) scanLeDevice(true); 
+            	if (!mScanning) scanLeDevice(true);
             	else finish();
             }
         });
@@ -227,7 +219,6 @@ public class DeviceListActivity extends Activity {
     	
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            BluetoothDevice device = deviceList.get(position);
             mBluetoothAdapter.stopLeScan(mLeScanCallback);
   
             Bundle b = new Bundle();
@@ -248,12 +239,12 @@ public class DeviceListActivity extends Activity {
         scanLeDevice(false);
     }
     
-    class DeviceAdapter extends BaseAdapter {
+    private class DeviceAdapter extends BaseAdapter {
         Context context;
         List<BluetoothDevice> devices;
         LayoutInflater inflater;
 
-        public DeviceAdapter(Context context, List<BluetoothDevice> devices) {
+        DeviceAdapter(Context context, List<BluetoothDevice> devices) {
             this.context = context;
             inflater = LayoutInflater.from(context);
             this.devices = devices;
@@ -281,7 +272,8 @@ public class DeviceListActivity extends Activity {
             if (convertView != null) {
                 vg = (ViewGroup) convertView;
             } else {
-                vg = (ViewGroup) inflater.inflate(R.layout.device_element, null);
+                final ViewGroup nullParent = null;
+                vg = (ViewGroup) inflater.inflate(R.layout.device_element, nullParent);
             }
 
             BluetoothDevice device = devices.get(position);
@@ -317,8 +309,5 @@ public class DeviceListActivity extends Activity {
             }
             return vg;
         }
-    }
-    private void showMessage(String msg) {
-        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
     }
 }

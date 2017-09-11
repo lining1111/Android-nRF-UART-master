@@ -39,9 +39,7 @@ import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.IBinder;
-import android.os.Message;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.View;
@@ -59,14 +57,10 @@ import java.util.Locale;
 public class MainActivity extends Activity implements RadioGroup.OnCheckedChangeListener {
     private static final int REQUEST_SELECT_DEVICE = 1;
     private static final int REQUEST_ENABLE_BT = 2;
-    private static final int UART_PROFILE_READY = 10;
     public static final String TAG = "nRFUART";
     private static final int UART_PROFILE_CONNECTED = 20;
     private static final int UART_PROFILE_DISCONNECTED = 21;
-    private static final int STATE_OFF = 10;
 
-//    TextView mRemoteRssiVal;
-    RadioGroup mRg;
     private int mState = UART_PROFILE_DISCONNECTED;
     private UartService mService = null;
     private BluetoothDevice mDevice = null;
@@ -76,21 +70,6 @@ public class MainActivity extends Activity implements RadioGroup.OnCheckedChange
     private Button btnConnectDisconnect,btnSend;
     private EditText edtMessage;
 
-    //测试调试用的设置日期数据的按钮与输入框
-    private EditText commendMsg;
-    private EditText numberMsg;
-    private Button  testsendMsg;
-    //测试调试用的设置时效数据的按钮与输入框
-    private EditText timeCommendMsg;
-    private EditText timeNumberMsg;
-    private Button  timeTestsendMsg;
-    //设置电机转动时间
-    private EditText cirlceMsg;
-    private Button cirlceSendBtn;
-
-    //设置密码
-    private EditText changePasswordMsg;
-    private Button changePasswordBtn;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -171,7 +150,7 @@ public class MainActivity extends Activity implements RadioGroup.OnCheckedChange
         //对输入值进行规范化整理
         src = src.trim().replace(" ","").toUpperCase(Locale.US);
         //处理值初始化
-        int m = 0,n = 0;
+        int m,n;
         int iLen = (src.length())/2;//计算长度
         byte[] ret = new byte[iLen];//分配存储空间
 
@@ -202,22 +181,12 @@ public class MainActivity extends Activity implements RadioGroup.OnCheckedChange
         }
     };
 
-    private Handler mHandler = new Handler() {
-        @Override
-        
-        //Handler events that received from UART service 
-        public void handleMessage(Message msg) {
-  
-        }
-    };
-
     private final BroadcastReceiver UARTStatusChangeReceiver = new BroadcastReceiver() {
 
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
 
-            final Intent mIntent = intent;
-           //*********************//
+            //*********************//
             if (action.equals(UartService.ACTION_GATT_CONNECTED)) {
             	 runOnUiThread(new Runnable() {
                      public void run() {
